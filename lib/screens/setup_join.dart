@@ -11,6 +11,7 @@ import 'package:fluttermint/widgets/fedi_appbar.dart';
 import 'package:fluttermint/widgets/textured.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:sentry/sentry.dart';
 
 import '../client.dart';
 // import 'package:mobile_scanner/mobile_scanner.dart';
@@ -25,10 +26,16 @@ class SetupJoin extends ConsumerWidget {
     final textController = TextEditingController();
 
     void joinFederation(String cfg) async {
-      await api.joinFederation(
-          configUrl: cfg,
-          userDir:
-              await getApplicationDocumentsDirectory().then((dir) => dir.path));
+      // throw Exception('fuck you computer');
+      try {
+        await api.joinFederation(
+            configUrl: cfg,
+            userDir: await getApplicationDocumentsDirectory()
+                .then((dir) => dir.path));
+      } catch (err) {
+        context.go("/errormodal", extra: err);
+      }
+
       await codeProviderNotifier.update(cfg);
       context.go("/");
     }

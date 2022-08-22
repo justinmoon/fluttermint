@@ -7,6 +7,9 @@ import 'package:fluttermint/router.dart';
 import 'package:fluttermint/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './client.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sentry/sentry.dart';
+import 'package:sentry_logging/sentry_logging.dart';
 
 late SharedPreferences prefs;
 
@@ -23,7 +26,18 @@ Future<void> main() async {
     api.init(path: directory.path);
   });
 
-  runApp(const ProviderScope(child: App()));
+  await SentryFlutter.init(
+    (options) {
+      // FIXME: remove this
+      options.dsn =
+          'https://b012e4556763438e9036b723a15afae6@o1371604.ingest.sentry.io/6675820';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+      options.addIntegration(LoggingIntegration());
+    },
+    appRunner: () => runApp(const ProviderScope(child: App())),
+  );
 }
 
 class App extends ConsumerWidget {
