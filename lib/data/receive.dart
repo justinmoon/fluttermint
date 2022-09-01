@@ -45,7 +45,8 @@ class ReceiveNotifier extends StateNotifier<Receive?> {
     try {
       final invoice = state?.invoice;
       if (invoice == null) {
-        throw Exception("no error for some reason");
+        // throw Exception("no error for some reason");
+        return;
       }
       // debugPrint("checking status for ${invoice}");
 

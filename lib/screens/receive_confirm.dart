@@ -35,14 +35,17 @@ class ReceiveConfirm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // This should never be null because otherwise it should navigate us away
-    final receive = ref.read(receiveProvider)!;
+    final receive = ref.read(receiveProvider);
     final receiveNotifier = ref.read(receiveProvider.notifier);
 
     final statusProvider = ref.watch(paymentStatusStreamProvider);
 
-    if (receive.receiveStatus == "paid") {
+    if (receive?.receiveStatus == "paid") {
       context.go("/");
+    }
+
+    if (receive == null) {
+      return Text("");
     }
 
     // This shouldn't be null because should be prepped by the constructor
